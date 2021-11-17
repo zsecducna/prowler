@@ -29,6 +29,7 @@ CHECK_CAF_EPIC_extra730='Data Protection'
 extra730(){
   # "Check if ACM Certificates are about to expire in $DAYS_TO_EXPIRE_THRESHOLD days or less"
   for regx in $REGIONS; do
+  (
     LIST_OF_ACM_CERTS=$($AWSCLI acm list-certificates $PROFILE_OPT --region $regx --query 'CertificateSummaryList[].CertificateArn' --output text)
     if [[ $LIST_OF_ACM_CERTS ]];then
       for cert in $LIST_OF_ACM_CERTS; do
@@ -46,5 +47,7 @@ extra730(){
     else
       textInfo "$regx: No certificates found" "$regx"
     fi
+    ) & 
   done
+  wait
 }

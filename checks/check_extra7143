@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra7143='Data Protection'
 extra7143(){
   # "Check if EFS have policies which allow access to everyone (Not Scored) (Not part of CIS benchmark)"
   for regx in $REGIONS; do
+  (
   LIST_OF_EFS_IDS=$($AWSCLI efs describe-file-systems $PROFILE_OPT --region $regx --query FileSystems[*].FileSystemId --output text|xargs -n1)
   if [[ $LIST_OF_EFS_IDS ]]; then
     for efsId in $LIST_OF_EFS_IDS;do
@@ -41,9 +42,10 @@ extra7143(){
         fi
       fi
     done
-
   else
     textInfo "$regx: No EFS found" "$regx"
   fi
+  ) &
  done
+ wait
 }

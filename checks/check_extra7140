@@ -22,8 +22,8 @@ CHECK_REMEDIATION_extra7140='Carefully review the contents of the document befor
 CHECK_DOC_extra7140='https://docs.aws.amazon.com/systems-manager/latest/userguide/ssm-before-you-share.html'
 CHECK_CAF_EPIC_extra7140='Data Protection'
 extra7140(){
-  
   for regx in $REGIONS; do
+  (
     SSM_DOCS=$($AWSCLI $PROFILE_OPT --region $regx ssm list-documents --filters Key=Owner,Values=Self --query DocumentIdentifiers[].Name --output text) 
     if [[ $SSM_DOCS ]];then
       for ssmdoc in $SSM_DOCS; do 
@@ -37,5 +37,7 @@ extra7140(){
     else
       textInfo "$regx: No SSM Document found." "$regx"
     fi
+    ) &
   done
+  wait
 }

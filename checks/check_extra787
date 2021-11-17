@@ -32,6 +32,7 @@ extra787(){
   ES_KIBANA_PORT="5601"
 
   for regx in $REGIONS; do
+  (
     # create a list of SG open to the world with port $ES_API_PORT or $ES_DATA_PORT or $ES_KIBANA_PORT
     SG_LIST=$($AWSCLI ec2 describe-security-groups $PROFILE_OPT --region $regx --output text \
       --query "SecurityGroups[?length(IpPermissions[?((FromPort==null && ToPort==null) || (FromPort<=\`$ES_API_PORT\` && ToPort>=\`$ES_API_PORT\`) || (FromPort<=\`$ES_DATA_PORT\` && ToPort>=\`$ES_DATA_PORT\`) || (FromPort<=\`$ES_KIBANA_PORT\` && ToPort>=\`$ES_KIBANA_PORT\`)) && (contains(IpRanges[].CidrIp, \`0.0.0.0/0\`) || contains(Ipv6Ranges[].CidrIpv6, \`::/0\`))]) > \`0\`].{GroupId:GroupId}")
@@ -84,5 +85,7 @@ extra787(){
     else
       textPass "$regx: No Security Groups found open to 0.0.0.0/0 for Elasticsearch/Kibana ports" "$regx"
     fi
+    ) & 
   done
+  wait
 }

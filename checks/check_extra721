@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra721='Logging and Monitoring'
 extra721(){
   # "Check if Redshift cluster has audit logging enabled "
   for regx in $REGIONS; do
+  (
     LIST_OF_REDSHIFT_CLUSTERS=$($AWSCLI redshift describe-clusters $PROFILE_OPT --region $regx --query 'Clusters[*].ClusterIdentifier' --output text)
     if [[ $LIST_OF_REDSHIFT_CLUSTERS ]]; then
       for redshiftcluster in $LIST_OF_REDSHIFT_CLUSTERS;do
@@ -40,5 +41,7 @@ extra721(){
     else
       textInfo "$regx: No Redshift cluster configured" "$regx"
     fi
+    ) & 
   done
+  wait
 }

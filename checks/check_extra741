@@ -31,6 +31,7 @@ extra741(){
   fi
 
   for regx in $REGIONS; do
+  (
     LIST_OF_EC2_INSTANCES=$($AWSCLI ec2 describe-instances $PROFILE_OPT --region $regx --query Reservations[*].Instances[*].InstanceId --output text --max-items $MAXITEMS | grep -v None)
     if [[ $LIST_OF_EC2_INSTANCES ]];then
       for instance in $LIST_OF_EC2_INSTANCES; do
@@ -61,6 +62,8 @@ extra741(){
     else
       textInfo "$regx: No EC2 instances found" "$regx"
     fi
+    ) & 
   done
+  wait
   rm -rf $SECRETS_TEMP_FOLDER
 }

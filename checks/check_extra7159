@@ -25,6 +25,7 @@ CHECK_CAF_EPIC_extra7159='Data Protection'
 
 extra7159(){
   for regx in $REGIONS; do
+  (
     LIST_OF_ELBS=$($AWSCLI elb describe-load-balancers --query 'LoadBalancerDescriptions[*].LoadBalancerName' $PROFILE_OPT --region $regx --output text)
     if [[ $LIST_OF_ELBS ]]; then
       for elb in $LIST_OF_ELBS; do
@@ -38,5 +39,7 @@ extra7159(){
     else
       textInfo "$regx: No ELBs found" "$regx"
     fi
+    ) &
   done
+  wait
 }

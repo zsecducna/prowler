@@ -25,6 +25,7 @@ CHECK_CAF_EPIC_extra772='Infrastructure Security'
 
 extra772(){
   for region in $REGIONS; do
+  (
     EIP_DUMP=$($AWSCLI ec2 describe-addresses ${PROFILE_OPT} --region $region --output json)
     EIP_LIST=$(echo $EIP_DUMP | jq -r '.Addresses[].AllocationId')
     if [[ $EIP_LIST ]]; then
@@ -39,5 +40,7 @@ extra772(){
     else
       textInfo "$region: No Elastic IPs found" $region
     fi
+    ) & 
   done
+  wait
 }

@@ -27,6 +27,7 @@ CHECK_CAF_EPIC_extra7142='Data Protection'
 
 extra7142(){
   for regx in $REGIONS; do
+  (
     LIST_OF_ELBSV2=$($AWSCLI elbv2 describe-load-balancers $PROFILE_OPT --region $regx --query 'LoadBalancers[?Type == `application`].[LoadBalancerArn]' --output text)
     if [[ $LIST_OF_ELBSV2 ]];then
       for alb in $LIST_OF_ELBSV2;do
@@ -40,5 +41,7 @@ extra7142(){
     else 
       textInfo "$regx: no ALBs found"
     fi
+    ) &
   done
+  wait
 }

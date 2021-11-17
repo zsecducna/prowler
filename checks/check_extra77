@@ -28,6 +28,7 @@ CHECK_CAF_EPIC_extra77='Data Protection'
 extra77(){
   # "Ensure there are no ECR repositories set as Public "
   for regx in $REGIONS; do
+  (
     LIST_ECR_REPOS=$($AWSCLI ecr describe-repositories $PROFILE_OPT --region $regx --query "repositories[*].[repositoryName]" --output text 2>&1)
     if [[ $(echo "$LIST_ECR_REPOS" | grep AccessDenied) ]]; then
       textFail "$regx: Access Denied Trying to describe ECR repositories" "$regx" "$repo"
@@ -64,5 +65,7 @@ extra77(){
     else
       textInfo "$regx: No ECR repositories found" "$regx" "$repo"
     fi
+    ) & 
   done
+  wait
 }

@@ -28,6 +28,7 @@ CHECK_CAF_EPIC_check28='Data Protection'
 check28(){
   # "Ensure rotation for customer created CMKs is enabled (Scored)"
   for regx in $REGIONS; do
+  (
     CHECK_KMS_KEYLIST=$($AWSCLI kms list-keys $PROFILE_OPT --region $regx --output text --query 'Keys[*].KeyId' --output text 2>&1)
     if [[ $(echo "$CHECK_KMS_KEYLIST" | grep AccessDenied) ]]; then
       textFail "$regx: Access Denied trying to list keys" "$regx" "$key"
@@ -76,5 +77,7 @@ check28(){
     else
       textInfo "$regx: This region has no KMS keys" "$regx" "$key"
     fi
+  ) &
   done
+  wait 
 }

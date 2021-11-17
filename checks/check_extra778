@@ -64,6 +64,7 @@ extra778(){
     }
 
     for regx in ${REGIONS}; do
+    (
         SECURITY_GROUP_IDS=$(${AWSCLI} ec2 describe-security-groups \
                               ${PROFILE_OPT} \
                               --region ${regx} \
@@ -74,5 +75,7 @@ extra778(){
             check_cidr "${SECURITY_GROUP}" "inbound" "${regx}"
             check_cidr "${SECURITY_GROUP}" "outbound" "${regx}"
         done
+        ) & 
     done
+    wait
 }

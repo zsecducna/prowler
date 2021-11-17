@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra757='Infrastructure Security'
 extra757(){
   OLDAGE="$(get_date_previous_than_months 6)"
   for regx in $REGIONS; do
+  (
     EC2_RUNNING="$($AWSCLI ec2 describe-instances --query "Reservations[*].Instances[*].[InstanceId]" $PROFILE_OPT --region $regx --output text)"
     if [[ $EC2_RUNNING ]]; then
       INSTACES_OLD_THAN_AGE=$($AWSCLI ec2 describe-instances --query "Reservations[].Instances[?LaunchTime<='$OLDAGE'][].{id: InstanceId, launched: LaunchTime}" $PROFILE_OPT --region $regx --output text)
@@ -42,5 +43,7 @@ extra757(){
     else
       textInfo "$regx: No EC2 Instances Found" "$regx"
     fi
+    ) & 
   done
+  wait
 }

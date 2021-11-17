@@ -29,6 +29,7 @@ CHECK_CAF_EPIC_check43='Infrastructure Security'
 check43(){
   # "Ensure the default security group of every VPC restricts all traffic (Scored)"
   for regx in $REGIONS; do
+  (
     CHECK_SGDEFAULT_IDS=$($AWSCLI ec2 describe-security-groups $PROFILE_OPT --region $regx --filters Name=group-name,Values='default' --query 'SecurityGroups[*].GroupId[]' --output text)
     for CHECK_SGDEFAULT_ID in $CHECK_SGDEFAULT_IDS; do
       CHECK_SGDEFAULT_ID_OPEN=$($AWSCLI ec2 describe-security-groups $PROFILE_OPT --region $regx --group-ids $CHECK_SGDEFAULT_ID --query 'SecurityGroups[*].{IpPermissions:IpPermissions,IpPermissionsEgress:IpPermissionsEgress,GroupId:GroupId}' --output text |egrep '\s0.0.0.0|\:\:\/0')
@@ -38,5 +39,7 @@ check43(){
         textPass "$regx: No Default Security Groups ($CHECK_SGDEFAULT_ID) open to 0.0.0.0 found" "$regx" "$CHECK_SGDEFAULT_ID"
       fi
     done
+  ) & 
   done
+  wait
 }

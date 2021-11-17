@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra798='Infrastructure Security'
 
 extra798(){
   for regx in $REGIONS; do
+  (
     LIST_OF_FUNCTIONS=$($AWSCLI lambda list-functions $PROFILE_OPT --region $regx --output text --query 'Functions[*].FunctionName')
     if [[ $LIST_OF_FUNCTIONS ]]; then
       for lambdafunction in $LIST_OF_FUNCTIONS; do
@@ -46,5 +47,7 @@ extra798(){
     else
       textInfo "$regx: No Lambda functions found" "$regx"
     fi
+    ) &
   done
+  wait
 }

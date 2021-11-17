@@ -25,6 +25,7 @@ CHECK_CAF_EPIC_extra794='Logging and Monitoring'
 
 extra794(){
   for regx in $REGIONS; do
+  (
     CLUSTERS=$($AWSCLI eks list-clusters $PROFILE_OPT --region $regx --query 'clusters[]' --output text)
     if [[ $CLUSTERS ]]; then
       for CLUSTER in $CLUSTERS;do
@@ -44,5 +45,7 @@ extra794(){
     else
       textInfo "$regx: No EKS clusters found" "$regx"
     fi
+  ) &
   done
+  wait
 }

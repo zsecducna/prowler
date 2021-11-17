@@ -27,6 +27,7 @@ CHECK_CAF_EPIC_extra710='Infrastructure Security'
 extra710(){
   # "Check for internet facing EC2 Instances "
   for regx in $REGIONS; do
+  (
     LIST_OF_PUBLIC_INSTANCES=$($AWSCLI ec2 describe-instances $PROFILE_OPT --region $regx --query 'Reservations[*].Instances[?PublicIpAddress].[InstanceId,PublicIpAddress]' --output text)
     if [[ $LIST_OF_PUBLIC_INSTANCES ]];then
       while read -r instance;do
@@ -37,5 +38,7 @@ extra710(){
       else
         textPass "$regx: no Internet Facing EC2 Instances found" "$regx" "$INSTANCE_ID"
     fi
+    ) & 
   done
+  wait
 }

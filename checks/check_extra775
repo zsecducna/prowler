@@ -30,6 +30,7 @@ extra775(){
   fi 
 
   for regx in $REGIONS; do
+  (
     LIST_OF_EC2_AUTOSCALING=$($AWSCLI autoscaling describe-launch-configurations $PROFILE_OPT --region $regx --query LaunchConfigurations[*].LaunchConfigurationName --output text --max-items $MAXITEMS | grep -v None)
     if [[ $LIST_OF_EC2_AUTOSCALING ]];then
       for autoscaling_configuration in $LIST_OF_EC2_AUTOSCALING; do
@@ -68,6 +69,8 @@ extra775(){
     else
       textInfo "$regx: No EC2 autoscaling_configurations found" "$regx"
     fi
+    ) & 
   done
+  wait
   rm -rf $SECRETS_TEMP_FOLDER
 }

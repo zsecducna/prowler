@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra720='Logging and Monitoring'
 extra720(){
   # "Check if Lambda functions invoke API operations are being recorded by CloudTrail "
   for regx in $REGIONS; do
+  (
     LIST_OF_FUNCTIONS=$($AWSCLI lambda list-functions $PROFILE_OPT --region $regx --query 'Functions[*].FunctionName' --output text 2>&1)
     if [[ $(echo "$LIST_OF_FUNCTIONS" | grep AccessDenied) ]]; then
       textFail "$regx: Access Denied trying to list functions" "$regx"
@@ -68,5 +69,7 @@ extra720(){
     else
       textInfo "$regx: No Lambda functions found" "$regx"
     fi
+    ) & 
   done
+  wait
 }

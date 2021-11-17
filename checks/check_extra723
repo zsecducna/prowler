@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra723='Data Protection'
 extra723(){
   # "Check if RDS Snapshots are public "
   for regx in $REGIONS; do
+  (
     # RDS snapshots
     LIST_OF_RDS_SNAPSHOTS=$($AWSCLI rds describe-db-snapshots $PROFILE_OPT --region $regx --query DBSnapshots[*].DBSnapshotIdentifier --output text)
     if [[ $LIST_OF_RDS_SNAPSHOTS ]]; then
@@ -54,5 +55,7 @@ extra723(){
     else
       textInfo "$regx: No RDS Cluster Snapshots found" "$regx" "$rdsclustersnapshot"
     fi
+    ) & 
   done
+  wait
 }

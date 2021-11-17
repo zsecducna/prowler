@@ -24,9 +24,23 @@ CHECK_REMEDIATION_extra793='Scan for Load Balancers with HTTP or TCP listeners a
 CHECK_DOC_extra793='https://docs.aws.amazon.com/elasticloadbalancing/latest/application/create-https-listener.html'
 CHECK_CAF_EPIC_extra793='Data Protection'
 
+array_contains () { 
+    local array="$1[@]"
+    local seeking=$2
+    local in=1
+    for element in "${!array}"; do
+        if [[ $element == "$seeking" ]]; then
+            in=0
+            break
+        fi
+    done
+    return $in
+}
+
 extra793(){
   # "Check if Elastic Load Balancers have encrypted listeners "
   for regx in $REGIONS; do
+  (
     LIST_OF_ELBS=$($AWSCLI elb describe-load-balancers $PROFILE_OPT --region $regx --query 'LoadBalancerDescriptions[*].LoadBalancerName' --output text|xargs -n1)
     LIST_OF_ELBSV2=$($AWSCLI elbv2 describe-load-balancers $PROFILE_OPT --region $regx --query 'LoadBalancers[?(Type == `application`)].LoadBalancerArn' --output text|xargs -n1)
     if [[ $LIST_OF_ELBS || $LIST_OF_ELBSV2 ]]; then
@@ -99,18 +113,7 @@ extra793(){
     else
       textInfo "$regx: No ELBs found" "$regx"
     fi
+  ) &
   done
-}
-
-array_contains () { 
-    local array="$1[@]"
-    local seeking=$2
-    local in=1
-    for element in "${!array}"; do
-        if [[ $element == "$seeking" ]]; then
-            in=0
-            break
-        fi
-    done
-    return $in
+  wait
 }

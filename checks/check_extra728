@@ -27,6 +27,7 @@ CHECK_CAF_EPIC_extra728='Data Protection'
 
 extra728(){
   for regx in $REGIONS; do
+  (
     LIST_SQS=$($AWSCLI sqs list-queues $PROFILE_OPT --region $regx --query QueueUrls --output text |grep -v ^None)
     if [[ $LIST_SQS ]]; then
       for queue in $LIST_SQS; do
@@ -41,5 +42,7 @@ extra728(){
     else
       textInfo "$regx: No SQS queues found" "$regx"
     fi
+    ) & 
   done
+  wait
 }

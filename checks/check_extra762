@@ -30,6 +30,7 @@ extra762(){
   OBSOLETE='%(nodejs4.3|nodejs4.3-edge|nodejs6.10|nodejs8.10|dotnetcore1.0|dotnetcore2.0)'
 
   for regx in $REGIONS; do
+  (
     LIST_OF_FUNCTIONS=$($AWSCLI lambda list-functions $PROFILE_OPT --region $regx --output text --query 'Functions[*].{R:Runtime,N:FunctionName}' | tr "\t" "%")
     if [[ $LIST_OF_FUNCTIONS ]]; then
       for lambdafunction in $LIST_OF_FUNCTIONS;do
@@ -44,5 +45,7 @@ extra762(){
     else
       textInfo "$regx: No Lambda functions found" "$regx"
     fi
+    ) & 
   done
+  wait
 }

@@ -29,6 +29,7 @@ extra768(){
     mkdir $SECRETS_TEMP_FOLDER
   fi
   for regx in $REGIONS; do
+  (
     # Get a list of all task definition families first:
     FAMILIES=$($AWSCLI ecs list-task-definition-families $PROFILE_OPT --region $regx --status ACTIVE | jq -r .families[])
     if [[ $FAMILIES ]]; then
@@ -58,5 +59,7 @@ extra768(){
     else
       textInfo "$regx: No ECS task definitions found" "$regx"
     fi
+    ) & 
   done
+  wait
 }

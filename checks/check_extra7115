@@ -25,6 +25,7 @@ CHECK_CAF_EPIC_extra7115='Data Protection'
 
 extra7115(){
   for regx in $REGIONS; do
+  (
     CONNECTION_LIST=$($AWSCLI glue get-connections $PROFILE_OPT --region $regx  --output json --query 'ConnectionList[*].{Name:Name,SSL:ConnectionProperties.JDBC_ENFORCE_SSL}')
     if [[ $CONNECTION_LIST != '[]' ]]; then
       for connection in $(echo "${CONNECTION_LIST}" | jq -r '.[] | @base64'); do
@@ -39,5 +40,7 @@ extra7115(){
     else 
       textInfo "$regx: There are no Glue connections" "$regx"
     fi 
-  done     
+    ) &
+  done   
+  wait  
 }

@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra7150='Data Protection'
 extra7150(){
   # "Check if Elastic Load Balancers have delete protection enabled."
   for regx in $REGIONS; do
+  (
     LIST_OF_ELBSV2=$($AWSCLI elbv2 describe-load-balancers $PROFILE_OPT --region $regx --query 'LoadBalancers[*].LoadBalancerArn' --output text|xargs -n1)
     if [[ $LIST_OF_ELBSV2 ]]; then
       for elb in $LIST_OF_ELBSV2; do
@@ -40,5 +41,7 @@ extra7150(){
     else
       textInfo "$regx: No ELBs found" "$regx"
     fi
+    ) &
   done
+  wait
 }

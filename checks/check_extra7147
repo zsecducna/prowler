@@ -25,6 +25,7 @@ CHECK_CAF_EPIC_extra7147='Data Protection'
 
 extra7147(){
   for regx in $REGIONS; do
+  (
   LIST_OF_VAULTS=$($AWSCLI glacier list-vaults $PROFILE_OPT --region $regx --account-id $ACCOUNT_NUM --query VaultList[*].VaultName --output text|xargs -n1)
   if [[ $LIST_OF_VAULTS ]]; then
     for vault in $LIST_OF_VAULTS;do
@@ -43,5 +44,7 @@ extra7147(){
   else
     textInfo "$regx: No Glacier vaults found" "$regx"
   fi
+  ) &
  done
+ wait
 }

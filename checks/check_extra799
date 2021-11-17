@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra799='Logging and Monitoring'
 
 extra799(){
   for regx in $REGIONS; do
+  (
     # If command below fails get nothing then it there are no subscriptions and Security Hub is not enabled.
     LIST_OF_SECHUB_SUBSCRIPTIONS=$($AWSCLI $PROFILE_OPT --region $regx securityhub get-enabled-standards --query 'StandardsSubscriptions[?StandardsStatus == `READY`].StandardsSubscriptionArn' --output json 2>/dev/null | awk -F "/" '{ print $2 }' | tr '\n' ' ' ) 
     if [[ $LIST_OF_SECHUB_SUBSCRIPTIONS ]]; then
@@ -34,5 +35,7 @@ extra799(){
       textInfo "$regx: Security Hub is not enabled" "$regx"
       #textFail "$regx: Security Hub is not enabled" "$regx"
     fi
+    ) &
   done
+  wait
 }

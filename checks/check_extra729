@@ -28,6 +28,7 @@ CHECK_CAF_EPIC_extra729='Data Protection'
 extra729(){
   # "Ensure there are no EBS Volumes unencrypted "
   for regx in $REGIONS; do
+  (
     LIST_OF_EBS_NON_ENC_VOLUMES=$($AWSCLI ec2 describe-volumes $PROFILE_OPT --region $regx --query 'Volumes[?Encrypted==`false`].VolumeId' --output text)
     if [[ $LIST_OF_EBS_NON_ENC_VOLUMES ]];then
       for volume in $LIST_OF_EBS_NON_ENC_VOLUMES; do
@@ -40,5 +41,7 @@ extra729(){
         textPass "$regx: $volume is encrypted" "$regx" "$volume"
       done
     fi
+    ) & 
   done
+  wait
 }

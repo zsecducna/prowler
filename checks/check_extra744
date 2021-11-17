@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra744='Infrastructure Security'
 
 extra744(){
   for regx in $REGIONS; do
+  (
     LIST_OF_REST_APIS=$($AWSCLI $PROFILE_OPT --region $regx apigateway get-rest-apis --query 'items[*].id' --output text)
     if [[ $LIST_OF_REST_APIS ]];then
       for api in $LIST_OF_REST_APIS; do
@@ -45,5 +46,7 @@ extra744(){
     else
       textInfo "$regx: No API Gateways found" "$regx"
     fi
+    ) & 
   done
+  wait
 }

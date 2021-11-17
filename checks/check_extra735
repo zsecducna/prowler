@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra735='Data Protection'
 
 extra735(){
   for regx in $REGIONS; do
+  (
     LIST_OF_RDS_INSTANCES=$($AWSCLI rds describe-db-instances $PROFILE_OPT --region $regx --query 'DBInstances[*].DBInstanceIdentifier' --output text)
     if [[ $LIST_OF_RDS_INSTANCES ]];then
       for rdsinstance in $LIST_OF_RDS_INSTANCES; do
@@ -39,5 +40,7 @@ extra735(){
     else
       textInfo "$regx: No RDS instances found" "$regx" "$rdsinstance"
     fi
+    ) & 
   done
+  wait
 }

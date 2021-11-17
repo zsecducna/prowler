@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra7101='Logging and Monitoring'
 
 extra7101(){
   for regx in $REGIONS; do
+  (
     LIST_OF_DOMAINS=$($AWSCLI es list-domain-names $PROFILE_OPT --region $regx --query DomainNames --output text)
     if [[ $LIST_OF_DOMAINS ]]; then
       for domain in $LIST_OF_DOMAINS;do
@@ -39,5 +40,7 @@ extra7101(){
     else
       textInfo "$regx: No Amazon ES domain found" "$regx"
     fi
+    ) &
   done
+  wait
 }

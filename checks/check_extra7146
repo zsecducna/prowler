@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra7146='Infrastructure Security'
 extra7146(){
   # "Check if there is any unassigned elastic ip (Not Scored) (Not part of CIS benchmark)"
   for regx in $REGIONS; do
+  (
     ELASTIC_IP_ADDRESSES=$($AWSCLI ec2 describe-addresses $PROFILE_OPT --region $regx --query Addresses --output json)
     if [[ $ELASTIC_IP_ADDRESSES != [] ]]; then
       LIST_OF_ASSOCIATED_IPS=$(echo $ELASTIC_IP_ADDRESSES | jq -r '.[] | select(.AssociationId!=null) | .PublicIp')
@@ -39,5 +40,7 @@ extra7146(){
     else
       textInfo "$regx: No Elastic IPs found" "$regx"
     fi
+    ) &
   done
+  wait
 }

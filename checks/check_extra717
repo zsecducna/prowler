@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra717='Logging and Monitoring'
 extra717(){
   # "Check if Elastic Load Balancers have logging enabled "
   for regx in $REGIONS; do
+  (
     LIST_OF_ELBS=$($AWSCLI elb describe-load-balancers $PROFILE_OPT --region $regx --query 'LoadBalancerDescriptions[*].LoadBalancerName' --output text|xargs -n1)
     LIST_OF_ELBSV2=$($AWSCLI elbv2 describe-load-balancers $PROFILE_OPT --region $regx --query 'LoadBalancers[*].LoadBalancerArn' --output text|xargs -n1)
     if [[ $LIST_OF_ELBS || $LIST_OF_ELBSV2 ]]; then
@@ -53,5 +54,7 @@ extra717(){
     else
       textInfo "$regx: No ELBs found" "$regx"
     fi
+    ) & 
   done
+  wait
 }

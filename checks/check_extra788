@@ -29,6 +29,7 @@ extra788(){
 
   # "Check if Elasticsearch Service domains allow open access "
   for regx in $REGIONS; do
+  (
     LIST_OF_DOMAINS=$($AWSCLI es list-domain-names $PROFILE_OPT --region $regx --query DomainNames --output text)
     if [[ $LIST_OF_DOMAINS ]]; then
       for domain in $LIST_OF_DOMAINS;do
@@ -95,5 +96,7 @@ extra788(){
     else
       textInfo "$regx: No Amazon ES domain found" "$regx"
     fi
+    ) & 
   done
+  wait
 }

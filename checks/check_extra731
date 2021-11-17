@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra731='Infrastructure Security'
 
 extra731(){
   for regx in $REGIONS; do
+  (
     LIST_SNS=$($AWSCLI sns list-topics $PROFILE_OPT --region $regx --query Topics --output text |grep -v ^None)
     if [[ $LIST_SNS ]]; then
       for topic in $LIST_SNS; do
@@ -50,5 +51,7 @@ extra731(){
     else
       textInfo "$regx: No SNS topic found" "$regx"
     fi
+    ) & 
   done
+  wait
 }

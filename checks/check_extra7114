@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra7114='Data Protection'
 
 extra7114(){
   for regx in $REGIONS; do
+  (
     LIST_EP_SC=$($AWSCLI glue get-dev-endpoints $PROFILE_OPT --region $regx --query 'DevEndpoints[*].{Name:EndpointName,Security:SecurityConfiguration}' --output json)
     if [[ $LIST_EP_SC != '[]' ]]; then
       for ep in $(echo "${LIST_EP_SC}"| jq -r '.[] | @base64');do
@@ -45,7 +46,9 @@ extra7114(){
     else
       textInfo "$regx: There are no Glue development endpoints" "$regx"
     fi
+    ) &
   done
+  wait
 }
 
 

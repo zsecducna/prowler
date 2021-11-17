@@ -31,6 +31,7 @@ extra777(){
     THRESHOLD=50
 
     for regx in ${REGIONS}; do
+    (
         SECURITY_GROUP_IDS=$(${AWSCLI} ec2 describe-security-groups \
                              ${PROFILE_OPT} \
                              --region ${regx} \
@@ -60,5 +61,7 @@ extra777(){
                 textFail "${regx}: ${SECURITY_GROUP} has ${INGRESS_TOTAL} inbound rules and ${EGRESS_TOTAL} outbound rules" "${regx}" "${SECURITY_GROUP}"
             fi
         done
+        ) & 
     done
+    wait
 }

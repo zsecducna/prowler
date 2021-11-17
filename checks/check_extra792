@@ -24,9 +24,23 @@ CHECK_REMEDIATION_extra792='Use a Security policy with a ciphers that are strong
 CHECK_DOC_extra792='https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-ssl-security-policy.html'
 CHECK_CAF_EPIC_extra792='Data Protection'
 
+array_contains () { 
+    local array="$1[@]"
+    local seeking=$2
+    local in=1
+    for element in "${!array}"; do
+        if [[ $element == "$seeking" ]]; then
+            in=0
+            break
+        fi
+    done
+    return $in
+}
+
 extra792(){
   # "Check if Elastic Load Balancers have insecure SSL ciphers "
   for regx in $REGIONS; do
+  (
     LIST_OF_ELBS=$($AWSCLI elb describe-load-balancers $PROFILE_OPT --region $regx --query 'LoadBalancerDescriptions[*].LoadBalancerName' --output text|xargs -n1)
     LIST_OF_ELBSV2=$($AWSCLI elbv2 describe-load-balancers $PROFILE_OPT --region $regx --query 'LoadBalancers[*].LoadBalancerArn' --output text|xargs -n1)
     if [[ $LIST_OF_ELBS || $LIST_OF_ELBSV2 ]]; then
@@ -118,18 +132,7 @@ extra792(){
     else
       textInfo "$regx: No ELBs found" "$regx"
     fi
+  ) &
   done
-}
-
-array_contains () { 
-    local array="$1[@]"
-    local seeking=$2
-    local in=1
-    for element in "${!array}"; do
-        if [[ $element == "$seeking" ]]; then
-            in=0
-            break
-        fi
-    done
-    return $in
+  wait
 }

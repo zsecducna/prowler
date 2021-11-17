@@ -28,6 +28,7 @@ CHECK_CAF_EPIC_extra78='Data Protection'
 extra78(){
   # "Ensure there are no Public Accessible RDS instances "
   for regx in $REGIONS; do
+  (
     LIST_OF_RDS_PUBLIC_INSTANCES=$($AWSCLI rds describe-db-instances $PROFILE_OPT --region $regx --query 'DBInstances[?PubliclyAccessible==`true` && DBInstanceStatus==`"available"`].[DBInstanceIdentifier,Endpoint.Address]' --output text)
     if [[ $LIST_OF_RDS_PUBLIC_INSTANCES ]];then
       while read -r rds_instance;do
@@ -38,5 +39,7 @@ extra78(){
       else
         textPass "$regx: no Publicly Accessible RDS instances found" "$regx" "$RDS_NAME"
     fi
+    ) & 
   done
+  wait
 }

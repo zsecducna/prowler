@@ -25,6 +25,7 @@ CHECK_CAF_EPIC_extra769='IAM'
 
 extra769(){
   for regx in $REGIONS; do
+  (
     LIST_OF_ACCESS_ANALYZERS=$($AWSCLI accessanalyzer list-analyzers $PROFILE_OPT --region $regx --query analyzers[*].arn --output text 2>&1)
     if [[ $(echo "$LIST_OF_ACCESS_ANALYZERS" | grep -i "argument command: Invalid choice") ]]; then
       textInfo "$regx: list-analyzers not supported, newer awscli needed" "$regx"
@@ -46,5 +47,7 @@ extra769(){
     else
       textInfo "$regx: No IAM Access Analyzers found" "$regx"
     fi
+    ) & 
   done
+  wait
 }

@@ -28,6 +28,7 @@ CHECK_CAF_EPIC_check25='Logging and Monitoring'
 check25(){
   # "Ensure AWS Config is enabled in all regions (Scored)"
   for regx in $REGIONS; do
+  (
     CHECK_AWSCONFIG_RECORDING=$($AWSCLI configservice describe-configuration-recorder-status $PROFILE_OPT --region $regx --query 'ConfigurationRecordersStatus[*].recording' --output text 2>&1)
     CHECK_AWSCONFIG_STATUS=$($AWSCLI configservice describe-configuration-recorder-status $PROFILE_OPT --region $regx --query 'ConfigurationRecordersStatus[*].lastStatus' --output text 2>&1)
     if [[ $(echo "$CHECK_AWSCONFIG_STATUS" | grep AccessDenied) ]]; then
@@ -43,5 +44,7 @@ check25(){
     else
       textFail "$regx: AWS Config recorder disabled" "$regx" "recorder"
     fi
+  ) &
   done
+  wait 
 }

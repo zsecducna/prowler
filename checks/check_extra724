@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra724='Logging and Monitoring'
 extra724(){
   # "Check if ACM certificates have Certificate Transparency logging enabled "
   for regx in $REGIONS; do
+  (
     LIST_OF_CERTS=$($AWSCLI acm list-certificates $PROFILE_OPT  --region $regx --query CertificateSummaryList[].CertificateArn --output text)
     if [[ $LIST_OF_CERTS ]];then
       for cert_arn in $LIST_OF_CERTS;do
@@ -46,5 +47,7 @@ extra724(){
     else
        textInfo "$regx: No ACM Certificates found" "$regx"
     fi
+    ) & 
   done
+  wait
 }

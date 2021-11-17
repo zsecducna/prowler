@@ -31,6 +31,7 @@ extra7141(){
   fi
 
   for regx in $REGIONS; do
+  (
     SSM_DOCS=$($AWSCLI $PROFILE_OPT --region $regx ssm list-documents --filters Key=Owner,Values=Self --query DocumentIdentifiers[].Name --output text) 
     if [[ $SSM_DOCS ]];then
       for ssmdoc in $SSM_DOCS; do 
@@ -50,6 +51,8 @@ extra7141(){
     else
       textInfo "$regx: No SSM Document found." "$regx"
     fi
+    ) &
   done
+  wait
   rm -rf $SECRETS_TEMP_FOLDER
 }

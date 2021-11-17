@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra7111='Infrastructure Security'
 
 extra7111(){
     for regx in ${REGIONS}; do
+    (
         LIST_SM_NB_INSTANCES=$($AWSCLI $PROFILE_OPT --region $regx sagemaker list-notebook-instances --query 'NotebookInstances[*].NotebookInstanceName' --output text)
         if [[ $LIST_SM_NB_INSTANCES ]];then 
             for nb_instance in $LIST_SM_NB_INSTANCES; do
@@ -39,5 +40,7 @@ extra7111(){
         else 
             textInfo "${regx}: No Sagemaker Notebook instances found" "${regx}"
         fi 
+        ) &
     done
+    wait
 }

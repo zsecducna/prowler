@@ -29,6 +29,7 @@ CHECK_CAF_EPIC_extra75='Infrastructure Security'
 extra75(){
   # "Ensure there are no Security Groups not being used "
   for regx in $REGIONS; do
+  (
     SECURITYGROUPS=$($AWSCLI ec2 describe-security-groups $PROFILE_OPT --region $regx --max-items $MAXITEMS --output json | jq '.SecurityGroups|map({(.GroupId): (.GroupName)})|add')
     if [[ $SECURITYGROUPS == "null" ]];
     then
@@ -50,5 +51,7 @@ extra75(){
         textPass "$regx: $SG_ID is being used" "$regx" "$SG_ID"
       fi
     done
+    ) & 
   done
+  wait
 }

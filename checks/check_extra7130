@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra7130='Data Protection'
 
 extra7130(){
   for regx in $REGIONS; do
+  (
     LIST_SNS=$($AWSCLI sns list-topics $PROFILE_OPT --region $regx --query 'Topics[*].TopicArn' --output text)
     if [[ $LIST_SNS ]];then
       for topic in $LIST_SNS; do
@@ -40,5 +41,7 @@ extra7130(){
     else
       textInfo "$regx: No SNS topic found" "$regx"
     fi
+  ) &
   done
+  wait
 }

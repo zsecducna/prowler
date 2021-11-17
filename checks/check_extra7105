@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra7105='Infrastructure Security'
 
 extra7105(){
 	for regx in ${REGIONS}; do
+	(
 		LIST_SM_NB_MODELS=$($AWSCLI $PROFILE_OPT --region $regx sagemaker list-models --query 'Models[*].ModelName' --output text)
 		if [[ $LIST_SM_NB_MODELS ]];then 
 			for nb_model_name in $LIST_SM_NB_MODELS; do
@@ -39,6 +40,8 @@ extra7105(){
 		else 
 			textInfo "${regx}: No Sagemaker Models found" "${regx}"
 		fi 
+		) &
 	done
+	wait
 }
 		

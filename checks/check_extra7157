@@ -25,6 +25,7 @@ CHECK_CAF_EPIC_extra7157='IAM'
 
 extra7157(){
   for regx in $REGIONS; do
+  (
     LIST_OF_API_GW=$($AWSCLI apigatewayv2 get-apis $PROFILE_OPT --region $regx --query "Items[*].ApiId" --output text)
     if [[ $LIST_OF_API_GW ]];then
       for api in $LIST_OF_API_GW; do
@@ -39,5 +40,7 @@ extra7157(){
     else
       textInfo "$regx: No API Gateways found" "$regx"
     fi
+    ) &
   done
+  wait
 }

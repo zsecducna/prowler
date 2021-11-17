@@ -24,6 +24,7 @@ CHECK_CAF_EPIC_extra7139='Incident Response'
 extra7139(){
   
   for regx in $REGIONS; do
+  (
     DETECTORS_LIST=""
     DETECTORS_LIST=$($AWSCLI guardduty list-detectors --query DetectorIds $PROFILE_OPT --region $regx --output text)
     if [[ $DETECTORS_LIST ]];then
@@ -39,5 +40,7 @@ extra7139(){
     else
       textInfo "$regx: No GuardDuty detectors found." "$regx"
     fi
+    ) &
   done
+  wait
 }

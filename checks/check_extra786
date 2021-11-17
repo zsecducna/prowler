@@ -25,6 +25,7 @@ CHECK_CAF_EPIC_extra786='Infrastructure Security'
 
 extra786(){
   for regx in $REGIONS; do
+  (
     TEMP_EXTRA786_FILE=$(mktemp -t prowler-${ACCOUNT_NUM}-es-domain.EXTRA786.XXXXXXXXXX)
     $AWSCLI ec2 describe-instances $PROFILE_OPT --region $regx \
       --query 'Reservations[*].Instances[*].{HttpTokens:MetadataOptions.HttpTokens,HttpEndpoint:MetadataOptions.HttpEndpoint,InstanceId:InstanceId}' \
@@ -46,7 +47,9 @@ extra786(){
      textInfo "$regx: no EC2 Instances found" "$regx"
     fi
     rm -fr $TEMP_EXTRA786_FILE
+    ) & 
   done
+  wait
 }
 
 # Remediation:

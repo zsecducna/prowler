@@ -9,6 +9,7 @@
 # work. If not, see <http://creativecommons.org/licenses/by-nc-sa/4.0/>.
 
 check3x(){
+  (
   grep_filter=$1
   local CHECK_OK
   local CHECK_WARN
@@ -94,4 +95,6 @@ check3x(){
   else
     textFail "$REGION: No CloudWatch group found for CloudTrail events" "$REGION"
   fi
+  ) &
+  wait
 }

@@ -27,6 +27,7 @@ CHECK_CAF_EPIC_extra713='Data Protection'
 extra713(){
   # "Check if GuardDuty is enabled "
   for regx in $REGIONS; do
+  (
     LIST_OF_GUARDDUTY_DETECTORS=$($AWSCLI guardduty list-detectors $PROFILE_OPT --region $regx --output text --query DetectorIds[*] 2> /dev/null)
     RESULT=$?
     if [ $RESULT -eq 0 ];then
@@ -46,5 +47,7 @@ extra713(){
       # if list-detectors return any error 
       textInfo "$regx: GuardDuty not checked" "$regx"
     fi 
+    ) & 
   done
+  wait
 }

@@ -34,6 +34,7 @@ CHECK_CAF_EPIC_extra765='Infrastructure Security'
 
 extra765(){
   for region in $REGIONS; do
+  (
     LIST_ECR_REPOS=$($AWSCLI ecr describe-repositories $PROFILE_OPT --region $region --query "repositories[*].[repositoryName]" --output text 2>&1)
     if [[ $(echo "$LIST_ECR_REPOS" | grep AccessDenied) ]]; then
       textFail "Access Denied Trying to describe ECR repositories"
@@ -60,5 +61,7 @@ extra765(){
     else
       textInfo "$region: No ECR repositories found" "$region"
     fi
+    ) & 
   done
+  wait
 }

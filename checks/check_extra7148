@@ -25,6 +25,7 @@ CHECK_CAF_EPIC_extra7148='Data Protection'
 
 extra7148() {
   for regx in $REGIONS; do
+  (
     LIST_OF_EFS_SYSTEMS=$($AWSCLI efs describe-file-systems $PROFILE_OPT --region $regx --query 'FileSystems[*].FileSystemId' --output text)
     if [[ $LIST_OF_EFS_SYSTEMS ]]; then
       for filesystem in $LIST_OF_EFS_SYSTEMS; do
@@ -39,5 +40,7 @@ extra7148() {
     else
       textInfo "$regx: No EFS File systems found" "$regx" "$filesystem"
     fi
+    ) &
   done
+  wait
 }

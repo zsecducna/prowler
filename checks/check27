@@ -30,6 +30,7 @@ check27(){
   trail_count=0
   # "Ensure CloudTrail logs are encrypted at rest using KMS CMKs (Scored)"
   for regx in $REGIONS; do
+  (
     TRAILS_AND_REGIONS=$($AWSCLI cloudtrail describe-trails $PROFILE_OPT --region $regx --query 'trailList[*].{Name:TrailARN, HomeRegion:HomeRegion}' --output text 2>&1 | tr "	" ',')
     if [[ $(echo "$TRAILS_AND_REGIONS" | grep AccessDenied) ]]; then
       textFail "$regx: Access Denied trying to describe trails" "$regx" "$trail"
@@ -43,6 +44,7 @@ check27(){
         fi
         trail=$(echo $reg_trail | cut -d',' -f2)
         trail_count=$((trail_count + 1))
+        echo $trail_count > 2
 
         KMSKEYID=$($AWSCLI cloudtrail describe-trails $PROFILE_OPT --region $TRAIL_REGION --query 'trailList[*].KmsKeyId' --output text --trail-name-list $trail)
         if [[ "$KMSKEYID" ]];then
@@ -52,7 +54,10 @@ check27(){
         fi
       done
     fi
+  ) &
   done
+  read -r trail_count < 2
+  wait 
   if [[ $trail_count == 0 ]]; then
     textFail "$REGION: No CloudTrail trails were found in the account" "$REGION" "$trail"
   fi

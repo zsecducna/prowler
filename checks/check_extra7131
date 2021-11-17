@@ -25,6 +25,7 @@ CHECK_CAF_EPIC_extra7131='Infrastructure Security'
 
 extra7131(){
   for regx in $REGIONS; do
+  (
     # LIST_OF_RDS_PUBLIC_INSTANCES=$($AWSCLI rds describe-db-instances $PROFILE_OPT --region $regx --query 'DBInstances[?PubliclyAccessible==`true` && DBInstanceStatus==`"available"`].[DBInstanceIdentifier,Endpoint.Address]' --output text)
     LIST_OF_RDS_INSTANCES=$($AWSCLI rds describe-db-instances $PROFILE_OPT --region $regx --query 'DBInstances[*].[DBInstanceIdentifier,AutoMinorVersionUpgrade]'  --output text)
     if [[ $LIST_OF_RDS_INSTANCES ]];then
@@ -40,5 +41,7 @@ extra7131(){
       else
         textInfo "$regx: no RDS instances found" "$regx" "$RDS_NAME"
     fi
+    ) &
   done
+  wait
 }

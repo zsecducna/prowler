@@ -26,6 +26,7 @@ CHECK_CAF_EPIC_extra711='Data Protection'
 extra711(){
   # "Check for Publicly Accessible Redshift Clusters "
   for regx in $REGIONS; do
+  (
     LIST_OF_PUBLIC_REDSHIFT_CLUSTERS=$($AWSCLI redshift describe-clusters $PROFILE_OPT --region $regx --query 'Clusters[?PubliclyAccessible == `true`].[ClusterIdentifier,Endpoint.Address]' --output text)
     if [[ $LIST_OF_PUBLIC_REDSHIFT_CLUSTERS ]];then
       while read -r cluster;do
@@ -36,5 +37,7 @@ extra711(){
       else
         textPass "$regx: no Publicly Accessible Redshift Clusters found" "$regx" "$CLUSTER_ID"
     fi
+    ) & 
   done
+  wait
 }

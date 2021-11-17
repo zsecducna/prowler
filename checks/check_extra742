@@ -31,6 +31,7 @@ extra742(){
   fi
 
   for regx in $REGIONS; do
+  (
     CFN_STACKS=$($AWSCLI cloudformation describe-stacks $PROFILE_OPT --region $regx --output json)
     LIST_OF_CFN_STACKS=$(echo $CFN_STACKS | jq -r '.Stacks[].StackName')
     if [[ $LIST_OF_CFN_STACKS ]];then
@@ -59,6 +60,8 @@ extra742(){
     else
       textInfo "$regx: No CloudFormation stacks found" "$regx"
     fi
+    ) & 
   done
+  wait
   rm -rf $SECRETS_TEMP_FOLDER
 }
