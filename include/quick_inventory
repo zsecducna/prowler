@@ -36,7 +36,7 @@ quick_inventory(){
     echo "-=- Running the inventory for AWS Account ${ACCOUNT_NUM} -=-"
     # get all resources per region and getting only their ARN
     for region in $REGIONS; do
-        echo "- Looking for resources in $region... "
+        echo -n "- Looking for resources in $region... "
         AWS_RESOURCES=$($AWSCLI resourcegroupstaggingapi get-resources \
             $PROFILE_OPT \
             --region $region \
