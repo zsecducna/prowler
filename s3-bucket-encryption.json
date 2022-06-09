@@ -1,0 +1,43 @@
+{
+    "Provider": "aws",
+    "CheckID": "s3-bucket-encryption",
+    "CheckName": "s3-bucket-encryption",
+    "CheckTitle": "Check if S3 buckets have encryption (SSE) enabled.",
+    "CheckAlias": "extra734",
+    "CheckType": "Data Protection",
+    "ServiceName": "s3",
+    "SubServiceName": "",
+    "ResourceIdTemplate": "arn:partition:service:region:account-id:resource-id",
+    "Severity": "Medium",
+    "ResourceType": "AwsS3Bucket",
+    "Description": "If Security groups are not properly configured the attack surface is increased.",
+    "Risk": "Amazon S3 default encryption provides a way to set the default encryption behavior for an S3 bucket. This will ensure data-at-rest is encrypted.",
+    "RelatedUrl": "https://docs.aws.amazon.com/AmazonS3/latest/dev/bucket-encryption.html",
+    "Remediation": {
+   	 "Recommendation": {
+   		 "Text": "Ensure that S3 buckets has encryption at rest enabled.",
+   		 "Url": "https://myfp.com/recommendations/dangerous_things_and_how_to_fix_them.html"
+   	 },
+		"Code": {
+   		 "NativeIaC": "code or URL to the code location.",
+   		 "Terraform": "code or URL to the code location.",
+		 "cli": "cli command or URL to the cli command location.",
+		 "other": "cli command or URL to the cli command location."
+   	 }
+    },
+    "Categories": ["cat1", "cat2"],
+    "Tags": {
+   	 "Tag1Key": "value",
+   	 "Tag2Key": "value"
+    },
+    "DependsOn": ["othercheck1", "othercheck2"],
+    "RelatedTo": ["othercheck3", "othercheck4"],
+    "Notes": "additional information",
+    "Compliance": [{
+   		 "Framework": "ENS-AWS",
+   		 "Version": "3",
+   		 "Group": ["info"],
+   		 "Control": ["s3.1"]
+   	 }
+    ]
+}

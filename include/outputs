@@ -45,7 +45,7 @@ EXTENSION_TEXT="txt"
 EXTENSION_HTML="html"
 HTML_LOGO_URL="https://github.com/prowler-cloud/prowler/"
 HTML_LOGO_IMG="https://github.com/prowler-cloud/prowler/raw/master/util/html/prowler-logo-new.png"
-TIMESTAMP=$(get_iso8601_timestamp)
+#TIMESTAMP=$(get_iso8601_timestamp)
 PROWLER_PARAMETERS=$@
 
 
